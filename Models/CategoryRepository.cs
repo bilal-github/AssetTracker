@@ -45,5 +45,40 @@ namespace AssetTracker.Models
 
             return categories;
         }
+
+        public string GetCategoryNameById(int categoryId)
+        {
+            try
+            {
+                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
+                string query = "SELECT CategoryName " +
+                                "FROM Categories " +
+                                "WHERE CategoryId = @CategoryId";
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand command = new SqlCommand(query, conn))
+                    {
+                        command.Parameters.AddWithValue("@CategoryId", categoryId);
+                        conn.Open();
+
+                        SqlDataReader reader;
+                        reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            return reader.GetString("CategoryName");
+                        }
+
+                        reader.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return "";
+        }
     }
 }

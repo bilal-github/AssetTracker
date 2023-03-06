@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<ICategory, CategoryRepository>();
+builder.Services.AddSingleton<IItem, ItemRepository>();
 
 var app = builder.Build();
 
