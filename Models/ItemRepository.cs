@@ -3,7 +3,7 @@ using System.Data;
 
 namespace AssetTracker.Models
 {
-    public class ItemRepository
+    public class ItemRepository : IItem
     {
         private readonly IConfiguration _configuration;
 

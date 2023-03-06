@@ -2,7 +2,7 @@
 using System.Data;
 namespace AssetTracker.Models
 {
-    public class CategoryRepository
+    public class CategoryRepository : ICategory
     {
         private readonly IConfiguration _configuration;
 
