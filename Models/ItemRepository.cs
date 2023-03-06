@@ -55,7 +55,7 @@ namespace AssetTracker.Models
             return items;
         }
 
-        public string InsertItem(Item item)
+        public bool CheckIfItemExists(Item item)
         {
             try
             {
@@ -77,26 +77,39 @@ namespace AssetTracker.Models
 
                         if (reader.HasRows)
                         {
-                            reader.Close();
-                            return "Item already exists";
-                        }
-                        else
-                        {
-                            reader.Close();
-
-                            string insertQuery = "INSERT INTO Items(ItemName, CategoryId, Value) " +
-                                        "Values(@ItemName, @CategoryId, @Value);" +
-                                        "SELECT SCOPE_IDENTITY()";
-
-                            using (SqlCommand insertCommand = new SqlCommand(insertQuery, conn))
-                            {
-                                insertCommand.Parameters.AddWithValue("@ItemName", item.ItemName);
-                                insertCommand.Parameters.AddWithValue("@CategoryId", item.CategoryId);
-                                insertCommand.Parameters.AddWithValue("@Value", item.Value);
-                                item.ItemId = Convert.ToInt32(insertCommand.ExecuteScalar());
-                            }
+                            return true;
                         }
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return false;
+        }
+
+        public string InsertItem(Item item)
+        {
+            try
+            {
+                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string insertQuery = "INSERT INTO Items(ItemName, CategoryId, Value) " +
+                                "Values(@ItemName, @CategoryId, @Value);" +
+                                "SELECT SCOPE_IDENTITY()";
+
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, conn))
+                    {
+                        conn.Open();
+                        insertCommand.Parameters.AddWithValue("@ItemName", item.ItemName);
+                        insertCommand.Parameters.AddWithValue("@CategoryId", item.CategoryId);
+                        insertCommand.Parameters.AddWithValue("@Value", item.Value);
+                        item.ItemId = Convert.ToInt32(insertCommand.ExecuteScalar());
+                    }
+
                 }
             }
             catch (Exception ex)
