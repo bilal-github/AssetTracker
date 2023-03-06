@@ -5,6 +5,7 @@ function InputRow(props) {
     const [itemValue, setItemValue] = useState(0);
     const [categoryId, setCategoryId] = useState("");
     const [categories, setCategories] = useState([]);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         fetch("api/categories")
@@ -18,14 +19,17 @@ function InputRow(props) {
 
     const handleNameChange = (event) => {
         setItemName(event.target.value);
+        setErrorMessage("");
     };
 
     const handleValueChange = (event) => {
         setItemValue(parseFloat(event.target.value));
+        setErrorMessage("");
     };
 
     const handleCategoryChange = (event) => {
         setCategoryId(event.target.value);
+        setErrorMessage("");
     };
 
     const handleSubmit = (event) => {
@@ -47,10 +51,14 @@ function InputRow(props) {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                console.log(categories);
-                onAddItem(data);
-                setItemName("");
-                setItemValue(0);
+                if (data.error) {
+                    setErrorMessage(data.error)
+                } else {
+                    onAddItem(data);
+                    setItemName("");
+                    setItemValue(0);
+                }
+
             })
             .catch((error) => console.log(error));
     };
@@ -59,8 +67,9 @@ function InputRow(props) {
         props.onAddItem(newItem);
     };
 
-   return (
+    return (
         <form onSubmit={handleSubmit} className="row">
+            {errorMessage && <div className="text-danger"> {errorMessage} </div>}
             <div className="col-3">
                 <input
                     type="text"

@@ -48,6 +48,10 @@ namespace AssetTracker.Controllers
         [HttpPost]
         public JsonResult Post(Item item)
         {
+            if(_iItem.CheckIfItemExists(item))
+            {
+                return new JsonResult( new { Error = "Item already exists" });
+            }
             return new JsonResult(_iItem.InsertItem(item));
 
 
