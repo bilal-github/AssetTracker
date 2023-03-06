@@ -10,11 +10,11 @@ function ItemList(props) {
     }, [props.items]);
 
     const handleDelete = (itemId) => {
-        fetch(`api/item/${itemId}`, { method: "DELETE" })
+        fetch(`api/items/${itemId}`, { method: "DELETE" })
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                fetch("api/item")
+                fetch("api/items")
                     .then((response) => response.json())
                     .then((data) => {
                         console.log(data);

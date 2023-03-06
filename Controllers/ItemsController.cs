@@ -6,12 +6,12 @@ namespace AssetTracker.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+    public class ItemsController : ControllerBase
     {
         private IItem _iItem;
         private ICategory _iCategory;
 
-        public ItemController(IItem iitem, ICategory icategory)
+        public ItemsController(IItem iitem, ICategory icategory)
         {
             _iItem = iitem;
             _iCategory = icategory;

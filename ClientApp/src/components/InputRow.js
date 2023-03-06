@@ -7,7 +7,7 @@ function InputRow(props) {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        fetch("api/category")
+        fetch("api/categories")
             .then((response) => response.json())
             .then((data) => {
                 setCategories(data);
@@ -37,7 +37,7 @@ function InputRow(props) {
             categoryId,
         };
 
-        fetch("api/item", {
+        fetch("api/items", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

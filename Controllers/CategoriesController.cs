@@ -5,11 +5,11 @@ namespace AssetTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoryController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly ICategory _iCategory;
 
-        public CategoryController(ICategory icategory)
+        public CategoriesController(ICategory icategory)
         {
             _iCategory = icategory;
         }

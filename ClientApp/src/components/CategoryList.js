@@ -5,7 +5,7 @@ function CategoryList(props) {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        fetch("api/item")
+        fetch("api/items")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.log(error));
