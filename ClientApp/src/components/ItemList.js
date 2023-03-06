@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/styles.css";
+import { FaTrash } from 'react-icons/fa';
 
 function ItemList(props) {
     const [items, setItems] = useState(props.items);
@@ -33,7 +34,8 @@ function ItemList(props) {
                     </div>
                     <div className="col-4">
                         ${item.value.toFixed(2)}
-                        <span className="inline" onClick={() => handleDelete(item.itemId)}>Trash
+                        <span className="inline" onClick={() => handleDelete(item.itemId)}>
+                            <FaTrash />
                         </span>
                     </div>
                 </li>
