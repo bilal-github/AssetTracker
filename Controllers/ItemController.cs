@@ -44,5 +44,26 @@ namespace AssetTracker.Controllers
 
             return new JsonResult(sortedItemsByCategory);
         }
+
+        [HttpPost]
+        public JsonResult Post(Item item)
+        {
+            return new JsonResult(_iItem.InsertItem(item));
+
+
+        }
+
+        [HttpDelete("{id}")]
+        public JsonResult Delete(int id)
+        {
+            int rowsAffected = _iItem.DeleteItem(id);
+            if (rowsAffected > 0)
+            {
+                return new JsonResult("Item Deleted Successfully");
+            }
+            return new JsonResult("Item was not Deleted");
+
+
+        }
     }
 }
