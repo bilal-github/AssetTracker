@@ -17,7 +17,6 @@ function ItemList(props) {
                 fetch("api/items")
                     .then((response) => response.json())
                     .then((data) => {
-                        console.log(data);
                         setItems(data);
                         props.onDeleteItem(itemId);
                     })

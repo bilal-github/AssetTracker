@@ -1,5 +1,9 @@
 using AssetTracker.Models;
 
+//pass in the server name (data source) to SetupDatabase
+//also update the datasource in the connection string in the appsettings.json
+DbSetup.SetUpDatabase(".");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
