@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CategoryList from "./components/CategoryList";
 import InputRow from "./components/InputRow";
 
 function App() {
 
     const [shouldRender, setShouldRender] = useState(false);
+    const nameInputRef = useRef(null);
 
     const handleDeleteItem = () => {
         setShouldRender(!shouldRender);
@@ -12,6 +13,7 @@ function App() {
 
     const handleAddItem = () => {
         setShouldRender(!shouldRender);
+        nameInputRef.current.focus();
     };
 
     return (
@@ -25,6 +27,7 @@ function App() {
                 onAddItem={handleAddItem}
                 shouldRender={shouldRender}
                 setShouldRender={setShouldRender}
+                nameInputRef={nameInputRef }
             />
         </div>
     );

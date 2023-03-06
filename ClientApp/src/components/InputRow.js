@@ -58,6 +58,7 @@ function InputRow(props) {
                     setItemName("");
                     setItemValue(0);
                 }
+                props.nameInputRef.current.focus();
 
             })
             .catch((error) => console.log(error));
@@ -77,6 +78,7 @@ function InputRow(props) {
                     placeholder="Item Name"
                     value={itemName}
                     onChange={handleNameChange}
+                    ref={props.nameInputRef }
                     required
                 />
             </div>
