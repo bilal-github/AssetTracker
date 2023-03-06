@@ -33,9 +33,13 @@ function CategoryList(props) {
         setCategories(updatedCategories);
     };
 
+    const categoriesWithItems = Object.keys(categories).filter(
+        categoryName => categories[categoryName].length > 0
+    );
+
     return (
         <div>
-            {Object.keys(categories).map((categoryName) => (
+            {categoriesWithItems.map((categoryName) => (
                 <div className="row mb-3" key={categoryName}>
                     <div className="col-4">
                         <h3>{categoryName}</h3>
