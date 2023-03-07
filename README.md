@@ -3,8 +3,8 @@ AssetTracker is a simple application that allows customers to list all their hig
 
 # How to run the project
 1. Clone the project to your local machine.
-2. Open the Appsettings.json file and update the Datasource to your own database connection string.
-3. Open the program.cs file and pass in the same Datasource into the SetupDatabase method.
+2. Open the `Appsettings.json` file and update the `Data source` in the connection string. (currently set to `"."`).
+3. Open the `Program.cs` file and pass in the same `Data source` (currently passing `"."`) into the SetupDatabase method.
 
 ## This is how the UI will look after the first run
 
