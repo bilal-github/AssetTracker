@@ -40,7 +40,7 @@ namespace AssetTracker.Models
             }
             catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine(ex.Message);
             }
 
             return categories;
@@ -76,7 +76,7 @@ namespace AssetTracker.Models
             }
             catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine(ex.Message);
             }
             return "";
         }

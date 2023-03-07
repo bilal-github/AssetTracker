@@ -49,7 +49,7 @@ namespace AssetTracker.Models
             }
             catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine(ex.Message);
             }
 
             return items;
@@ -84,7 +84,7 @@ namespace AssetTracker.Models
             }
             catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine(ex.Message);
             }
             return false;
         }
@@ -114,7 +114,7 @@ namespace AssetTracker.Models
             }
             catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine(ex.Message);
             }
 
             return "Item added successfully";
@@ -141,7 +141,7 @@ namespace AssetTracker.Models
             }
             catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine(ex.Message);
             }
 
             return rowsAffected;
