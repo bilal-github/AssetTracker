@@ -1,4 +1,6 @@
 using AssetTracker.Models;
+using Microsoft.EntityFrameworkCore;
+
 
 //pass in the server name (data source) to SetupDatabase
 //also update the datasource in the connection string in the appsettings.json
@@ -6,12 +8,19 @@ DbSetup.SetUpDatabase(".");
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<AssetDBContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("ItemsConnectionString");
+    options.UseSqlServer(connectionString);
+});
+
+
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<ICategory, CategoryRepository>();
-builder.Services.AddSingleton<IItem, ItemRepository>();
+builder.Services.AddTransient<ICategory, CategoryRepository>();
+builder.Services.AddTransient<IItem, ItemRepository>();
 
 var app = builder.Build();
 

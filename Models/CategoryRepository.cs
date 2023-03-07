@@ -1,84 +1,31 @@
-﻿using System.Data.SqlClient;
-using System.Data;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace AssetTracker.Models
 {
     public class CategoryRepository : ICategory
     {
-        private readonly IConfiguration _configuration;
+        private readonly  AssetDBContext _assetDBContext;
 
-        public CategoryRepository(IConfiguration configuration)
+        public CategoryRepository(AssetDBContext assetDBContext)
         {
-            _configuration = configuration;
+            _assetDBContext = assetDBContext;
         }
 
-        public List<Category> GetAllCategories()
+        public async Task<List<Category>> GetAllCategories()
         {
-            List<Category> categories = new List<Category>();
-            try
-            {
-                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = "SELECT CategoryId, CategoryName from Categories";
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
-                    {
-                        conn.Open();
+           return await _assetDBContext.Categories.ToListAsync();
 
-                        SqlDataReader reader;
-                        reader = command.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            Category category = new Category();
-                            category.CategoryId = reader.GetInt32("CategoryId");
-                            category.CategoryName = reader["CategoryName"].ToString();
-                            categories.Add(category);
-                        }
-                        reader.Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return categories;
         }
 
-        public string GetCategoryNameById(int categoryId)
+        public async Task<string> GetCategoryNameById(int categoryId)
         {
-            try
-            {
-                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
-                string query = "SELECT CategoryName " +
-                                "FROM Categories " +
-                                "WHERE CategoryId = @CategoryId";
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand command = new SqlCommand(query, conn))
-                    {
-                        command.Parameters.AddWithValue("@CategoryId", categoryId);
-                        conn.Open();
-
-                        SqlDataReader reader;
-                        reader = command.ExecuteReader();
-
-                        if (reader.Read())
-                        {
-                            return reader.GetString("CategoryName");
-                        }
-
-                        reader.Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return "";
+            return await _assetDBContext.Categories
+                .Where(category => category.CategoryId.Equals(categoryId))
+                .Select(category => category.CategoryName)
+                .FirstAsync();
+                
         }
     }
 }

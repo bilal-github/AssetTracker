@@ -2,9 +2,9 @@
 {
     public interface IItem
     {
-        bool CheckIfItemExists(Item item);
+        Task<bool> CheckIfItemExists(Item item);
         int DeleteItem(int id);
-        List<Item> GetAllItems();
-        string InsertItem(Item item);
+        Task<List<Item>> GetAllItems();
+        Task<string> InsertItem(Item item);
     }
 }

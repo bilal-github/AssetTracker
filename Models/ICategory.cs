@@ -2,7 +2,7 @@
 {
     public interface ICategory
     {
-        List<Category> GetAllCategories();
-        string GetCategoryNameById(int categoryId);
+        Task<List<Category>> GetAllCategories();
+        Task<string> GetCategoryNameById(int categoryId);
     }
 }

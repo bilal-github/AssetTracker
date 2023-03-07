@@ -15,9 +15,9 @@ namespace AssetTracker.Controllers
         }
 
         [HttpGet]
-        public JsonResult Get()
+        public async Task<JsonResult> Get()
         {
-            List<Category> categories = _iCategory.GetAllCategories();
+            List<Category> categories = await _iCategory.GetAllCategories();
             return new JsonResult(categories);
         }
     }

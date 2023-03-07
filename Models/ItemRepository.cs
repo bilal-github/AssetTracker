@@ -1,150 +1,54 @@
-﻿using System.Data.SqlClient;
-using System.Data;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetTracker.Models
 {
     public class ItemRepository : IItem
     {
-        private readonly IConfiguration _configuration;
+        private readonly AssetDBContext _assetDBContext;
 
-        public ItemRepository(IConfiguration configuration)
+        public ItemRepository(AssetDBContext assetDBContext)
         {
-            _configuration = configuration;
+            _assetDBContext = assetDBContext;
         }
 
-        public List<Item> GetAllItems()
+        public async Task<List<Item>> GetAllItems()
         {
-            List<Item> items = new List<Item>();
-            try
-            {
-                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = "SELECT i.ItemId, i.ItemName, i.CategoryId, c.CategoryName, i.Value " +
-                                    "FROM Items i " +
-                                    "INNER JOIN Categories c " +
-                                    "ON i.CategoryId = c.CategoryId";
+            return await _assetDBContext.Items.ToListAsync();
 
-                    using (SqlCommand command = new SqlCommand(query, conn))
-                    {
-                        conn.Open();
-
-                        SqlDataReader reader;
-                        reader = command.ExecuteReader();
-
-                        while (reader.Read())
-                        {
-                            Item item = new Item();
-                            item.ItemId = reader.GetInt32("ItemId");
-                            item.ItemName = reader.GetString("ItemName").ToString();
-                            item.CategoryId = reader.GetInt32("CategoryId");
-                            item.Value = reader.GetDecimal(reader.GetOrdinal("Value"));
-                            items.Add(item);
-                        }
-
-                        reader.Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return items;
         }
 
-        public bool CheckIfItemExists(Item item)
+        public async Task<bool> CheckIfItemExists(Item item)
         {
-            try
-            {
-                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
+            _ = item ?? throw new ArgumentException("Item cannot be null");
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string selectQuery = "SELECT * " +
-                                        "FROM Items " +
-                                        "WHERE ItemName = @ItemName AND CategoryId = @CategoryId AND Value = @Value";
-                    using (SqlCommand selectCommand = new SqlCommand(selectQuery, conn))
-                    {
-                        selectCommand.Parameters.AddWithValue("@ItemName", item.ItemName);
-                        selectCommand.Parameters.AddWithValue("@CategoryId", item.CategoryId);
-                        selectCommand.Parameters.AddWithValue("@Value", item.Value);
+            return await _assetDBContext.Items.Where(i => i.ItemName == item.ItemName && i.Value == item.Value).AnyAsync();
 
-                        conn.Open();
-                        SqlDataReader reader = selectCommand.ExecuteReader();
-
-                        if (reader.HasRows)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return false;
         }
 
-        public string InsertItem(Item item)
+        public async Task<string> InsertItem(Item item)
         {
-            try
+            _ = item ?? throw new ArgumentException("Item cannot be null");
+
+            await _assetDBContext.Items.AddAsync(item);
+            if (_assetDBContext.SaveChanges() > 0)
             {
-                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string insertQuery = "INSERT INTO Items(ItemName, CategoryId, Value) " +
-                                "Values(@ItemName, @CategoryId, @Value);" +
-                                "SELECT SCOPE_IDENTITY()";
-
-                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, conn))
-                    {
-                        conn.Open();
-                        insertCommand.Parameters.AddWithValue("@ItemName", item.ItemName);
-                        insertCommand.Parameters.AddWithValue("@CategoryId", item.CategoryId);
-                        insertCommand.Parameters.AddWithValue("@Value", item.Value);
-                        item.ItemId = Convert.ToInt32(insertCommand.ExecuteScalar());
-                    }
-
-                }
+                return "Item Added Successfully";
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            return "Item was not added";
 
-            return "Item added successfully";
+
+
         }
 
         public int DeleteItem(int id)
         {
-            int rowsAffected = 0;
-            try
-            {
-                string connectionString = _configuration.GetConnectionString("ItemsConnectionString");
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = "DELETE FROM Items " +
-                                    "WHERE ItemId = @ItemId";
-                    using (SqlCommand command = new SqlCommand(query, conn))
-                    {
-                        conn.Open();
-                        command.Parameters.AddWithValue("ItemId", id);
-                        rowsAffected = command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return rowsAffected;
+            Item item = new Item() { ItemId = id };
+            _assetDBContext.Attach(item);
+            _assetDBContext.Items.Remove(item);
+            return _assetDBContext.SaveChanges();            
         }
     }
 }

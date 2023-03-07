@@ -1,5 +1,4 @@
 ﻿using AssetTracker.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetTracker.Controllers
@@ -18,14 +17,14 @@ namespace AssetTracker.Controllers
         }
 
         [HttpGet]
-        public JsonResult Get()
+        public async Task<JsonResult> Get()
         {
-            List<Item> items = _iItem.GetAllItems();
+            List<Item> items = await _iItem.GetAllItems();
             Dictionary<string, List<Item>> sortedItemsByCategory = new Dictionary<string, List<Item>>();
 
             foreach (Item item in items)
             {
-                string categoryName = _iCategory.GetCategoryNameById(item.CategoryId);
+                string categoryName = await _iCategory.GetCategoryNameById(item.CategoryId);
 
                 if (!sortedItemsByCategory.ContainsKey(categoryName))
                 {
@@ -46,14 +45,13 @@ namespace AssetTracker.Controllers
         }
 
         [HttpPost]
-        public JsonResult Post(Item item)
+        public async Task<JsonResult> Post(Item item)
         {
-            if(_iItem.CheckIfItemExists(item))
+            if(await _iItem.CheckIfItemExists(item))
             {
                 return new JsonResult( new { Error = "Item already exists" });
             }
-            return new JsonResult(_iItem.InsertItem(item));
-
+            return new JsonResult(await _iItem.InsertItem(item));
 
         }
 
